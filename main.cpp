@@ -12,7 +12,7 @@ typedef struct colour colour;
 // provide c++ with prototypes of fortran functions
 extern "C" {
 	// initialilization function
-	void mandelbrotbrot_init(int r_size, int i_size);
+	void mandelbrot_init(int r_size, int i_size);
 	// update region function
 	void set_region(double r_min, double r_max, double i_min, double i_max);
 	// find changes
