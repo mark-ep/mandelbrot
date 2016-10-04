@@ -67,12 +67,13 @@ module colours
 		get_colour = table(index)
 	end function
 
-	subroutine cubehelix(start, rots, hue, gamma, nlev) bind(C)
+	subroutine cubehelix(start, rots, hue, gamma, nlev, reverse) bind(C)
 		integer(C_INT), value :: nlev
 		real(C_DOUBLE), value :: start, rots, hue, gamma
+		logical(C_BOOL), value :: reverse
 
 		real(8) :: pi, fract, angle, amp, r, g, b
-		integer :: i, max_value = 255
+		integer :: i, max_value = 255, index
 
 		pi = 4.0*atan(1.0)
 
@@ -81,36 +82,42 @@ module colours
 		do i=1, nlev
 			fract = float(i-1) / float(nlev-1)
 			angle = 2 * pi * (start/3.0 + 1.0 + rots*fract)
-			
+
 			fract = fract ** gamma
 			amp = hue * fract * (1 - fract) / 2.0
 
 			r = fract + amp * (-0.14861*cos(angle) + 1.78277*sin(angle))
-        	g = fract + amp * (-0.29227*cos(angle) - 0.90649*sin(angle))
-        	b = fract + amp * (+1.97294*cos(angle))
+    	g = fract + amp * (-0.29227*cos(angle) - 0.90649*sin(angle))
+    	b = fract + amp * (+1.97294*cos(angle))
 
-        	if (r .lt. 0.0) then
-        		r = 0.0
-        	else if (r .gt. 1.0) then
-        		r = 1.0
-        	end if
+    	if (r .lt. 0.0) then
+    		r = 0.0
+    	else if (r .gt. 1.0) then
+    		r = 1.0
+    	end if
 
-        	if (g .lt. 0.0) then
-        		g = 0.0
-        	else if (g .gt. 1.0) then
-        		g = 1.0
-        	end if
+    	if (g .lt. 0.0) then
+    		g = 0.0
+    	else if (g .gt. 1.0) then
+    		g = 1.0
+    	end if
 
-        	if (b .lt. 0.0) then
-        		b = 0.0
-        	else if (b .gt. 1.0) then
-        		b = 1.0
-        	end if
+    	if (b .lt. 0.0) then
+    		b = 0.0
+    	else if (b .gt. 1.0) then
+    		b = 1.0
+    	end if
 
-        	table(i)%r = floor(r * max_value)
-        	table(i)%g = floor(g * max_value)
-        	table(i)%b = floor(b * max_value)
-        end do
+			if (reverse) then
+				index = nlev - i + 1
+			else
+				index = i
+			end if
+
+    	table(index)%r = floor(r * max_value)
+    	table(index)%g = floor(g * max_value)
+    	table(index)%b = floor(b * max_value)
+    end do
 
 	end subroutine
 end module colours

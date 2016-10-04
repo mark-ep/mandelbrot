@@ -28,7 +28,7 @@ extern "C" {
 	// reset the screen
 	void reset_changes(bool* updates);
 
-	void cubehelix(double start, double rots, double hue, double gamma, int nlev);
+	void cubehelix(double start, double rots, double hue, double gamma, int nlev, bool reverse);
 }
 
 bool file_exists(const char* fname) {
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 	set_region(r_min, r_max, i_min, i_max);
 	// get fortran to load the colour table
 	//init_colours(255);
-	cubehelix(0, 3, 1.0, 1.0, 1000);
+	cubehelix(0, 1.5, 1.0, 1.0, 1000, true);
 
 	bool running = true;
 	SDL_Event e;
@@ -96,8 +96,9 @@ int main(int argc, char* argv[]) {
 	// initialize the array
 	reset_changes(values);
 
-	Uint32 white = SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
-	update_colours(values, white, screen->pixels);
+	// Uint32 white = SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
+	Uint32 inside = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
+	update_colours(values, inside, screen->pixels);
 
 	while (running) {
 		// check SDL for input events
@@ -158,11 +159,11 @@ int main(int argc, char* argv[]) {
 				// update the region
 				set_region(r_min, r_max, i_min, i_max);
 				// clear the screen
-				Uint32 black = SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
+				// Uint32 black = SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
 				reset_changes(values);
 
 				SDL_LockSurface(screen);
-				update_colours(values, black, screen->pixels);
+				update_colours(values, inside, screen->pixels);
 				SDL_UnlockSurface(screen);
 				// reset iteration counter
 				updates = 0;
