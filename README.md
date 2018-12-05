@@ -1,3 +1,5 @@
+![mandlebrot](/mandelbrot_000.png)
+
 # mandelbrot
 
 This is a simple Mandelbrot renderer written in Fortan and C++
